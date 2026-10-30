@@ -22,27 +22,27 @@ const SUGGESTED_TAGS = ["work", "church", "personal", "ideas", "reading"];
 
 const markdownComponents: Components = {
   h1: ({ children }) => (
-    <h1 className="text-2xl font-bold tracking-tight">{children}</h1>
+    <h1 className="text-2xl font-bold tracking-tight text-[#2e3027]">{children}</h1>
   ),
   h2: ({ children }) => (
-    <h2 className="text-xl font-semibold tracking-tight">{children}</h2>
+    <h2 className="text-xl font-semibold tracking-tight text-[#2e3027]">{children}</h2>
   ),
   h3: ({ children }) => (
-    <h3 className="text-lg font-semibold">{children}</h3>
+    <h3 className="text-lg font-semibold text-[#2e3027]">{children}</h3>
   ),
-  p: ({ children }) => <p className="leading-relaxed">{children}</p>,
+  p: ({ children }) => <p className="leading-relaxed text-[#45463b]">{children}</p>,
   strong: ({ children }) => (
-    <strong className="font-semibold text-zinc-950 dark:text-zinc-50">
+    <strong className="font-semibold text-[#2e3027]">
       {children}
     </strong>
   ),
   ul: ({ children }) => (
-    <ul className="list-disc space-y-1 pl-6">{children}</ul>
+    <ul className="list-disc space-y-1 pl-6 marker:text-[#596247]">{children}</ul>
   ),
   ol: ({ children }) => (
-    <ol className="list-decimal space-y-1 pl-6">{children}</ol>
+    <ol className="list-decimal space-y-1 pl-6 marker:text-[#596247]">{children}</ol>
   ),
-  li: ({ children }) => <li className="pl-1">{children}</li>,
+  li: ({ children }) => <li className="pl-1 text-[#45463b]">{children}</li>,
 };
 
 function subscribeToNotesStorage(onStoreChange: () => void) {
@@ -189,32 +189,32 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-8 sm:gap-10 sm:px-10 sm:py-16">
-      <header className="space-y-3">
-        <p className="text-sm font-semibold tracking-wide text-blue-600 dark:text-blue-400">
+    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 bg-[#f3ead7] px-4 py-8 text-[#2e3027] sm:gap-10 sm:px-10 sm:py-16">
+      <header className="space-y-3 border-b border-[#b8ad91] pb-6">
+        <p className="text-xs font-bold tracking-[0.22em] text-[#a34f36]">
           YOUR PERSONAL SPACE
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50 sm:text-4xl">
+        <h1 className="text-4xl font-bold tracking-tight text-[#2e3027] sm:text-5xl">
           Notes
         </h1>
-        <p className="text-zinc-600 dark:text-zinc-400">
+        <p className="max-w-prose text-[#596247]">
           Capture an idea and add tags to find it later.
         </p>
       </header>
 
       <form
-        className="flex flex-col gap-5 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 sm:p-6"
+        className="flex flex-col gap-5 rounded-xl border border-[#b8ad91] bg-[#fffaf0] p-4 shadow-[0_8px_24px_rgba(46,48,39,0.08)] sm:p-6"
         onSubmit={handleSubmit}
       >
         <div className="flex flex-col gap-2">
           <label
-            className="text-sm font-medium text-zinc-800 dark:text-zinc-200"
+            className="text-sm font-semibold tracking-wide text-[#45463b]"
             htmlFor="title"
           >
             Title
           </label>
           <input
-            className="min-h-11 w-full rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
+            className="min-h-11 w-full rounded-lg border border-[#b8ad91] bg-[#fdf7e9] px-3 py-2 text-[#2e3027] outline-none transition focus:border-[#596247] focus:ring-2 focus:ring-[#596247]/30"
             id="title"
             name="title"
             type="text"
@@ -223,13 +223,13 @@ export default function Home() {
 
         <div className="flex flex-col gap-2">
           <label
-            className="text-sm font-medium text-zinc-800 dark:text-zinc-200"
+            className="text-sm font-semibold tracking-wide text-[#45463b]"
             htmlFor="body"
           >
             Body
           </label>
           <textarea
-            className="min-h-36 w-full resize-y rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
+            className="min-h-36 w-full resize-y rounded-lg border border-[#b8ad91] bg-[#fdf7e9] px-3 py-2 text-[#2e3027] outline-none transition focus:border-[#596247] focus:ring-2 focus:ring-[#596247]/30"
             id="body"
             name="body"
             rows={5}
@@ -238,13 +238,13 @@ export default function Home() {
 
         <div className="flex flex-col gap-2">
           <label
-            className="text-sm font-medium text-zinc-800 dark:text-zinc-200"
+            className="text-sm font-semibold tracking-wide text-[#45463b]"
             htmlFor="tags"
           >
             Tags
           </label>
           <input
-            className="min-h-11 w-full rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
+            className="min-h-11 w-full rounded-lg border border-[#b8ad91] bg-[#fdf7e9] px-3 py-2 text-[#2e3027] outline-none transition focus:border-[#596247] focus:ring-2 focus:ring-[#596247]/30"
             id="tags"
             name="tags"
             placeholder="work, ideas, reading"
@@ -252,13 +252,13 @@ export default function Home() {
             value={tagsInput}
             onChange={(event) => setTagsInput(event.target.value)}
           />
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-[#686852]">
             Separate tags with commas.
           </p>
           <div aria-label="Suggested tags" className="flex flex-wrap gap-2">
             {SUGGESTED_TAGS.map((tag) => (
               <button
-                className="min-h-11 rounded-full border border-zinc-300 px-4 py-2 text-sm text-zinc-700 transition-colors hover:border-blue-500 hover:text-blue-700 dark:border-zinc-700 dark:text-zinc-300 dark:hover:text-blue-300"
+                className="min-h-11 rounded-full border border-[#b8ad91] bg-[#f3ead7] px-4 py-2 text-sm font-medium text-[#596247] transition-colors hover:border-[#596247] hover:bg-[#e9e0cb] focus:outline-none focus:ring-2 focus:ring-[#596247]/40"
                 key={tag}
                 onClick={() => {
                   const currentTags = tagsInput
@@ -285,19 +285,19 @@ export default function Home() {
         </div>
 
         {persistenceError && (
-          <p aria-live="polite" className="text-sm text-red-600 dark:text-red-400">
+          <p aria-live="polite" className="rounded-lg border border-[#a34f36]/30 bg-[#a34f36]/5 px-3 py-2 text-sm text-[#8c3f2d]">
             {persistenceError}
           </p>
         )}
 
         {error && (
-          <p aria-live="polite" className="text-sm text-red-600 dark:text-red-400">
+          <p aria-live="polite" className="rounded-lg border border-[#a34f36]/30 bg-[#a34f36]/5 px-3 py-2 text-sm text-[#8c3f2d]">
             {error}
           </p>
         )}
 
         <button
-          className="min-h-11 w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          className="min-h-11 w-full rounded-lg border border-[#8c3f2d] bg-[#a34f36] px-5 py-2 font-semibold tracking-wide text-[#fffaf0] shadow-sm transition-colors hover:bg-[#8c3f2d] focus:outline-none focus:ring-2 focus:ring-[#a34f36]/40 focus:ring-offset-2 focus:ring-offset-[#fffaf0] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           disabled={isPending || !isReady || Boolean(persistenceError)}
           type="submit"
         >
@@ -308,32 +308,32 @@ export default function Home() {
       <section aria-labelledby="notes-heading" className="space-y-4">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <h2
-            className="text-xl font-semibold text-zinc-950 dark:text-zinc-50"
+            className="text-xl font-bold tracking-tight text-[#2e3027]"
             id="notes-heading"
           >
             Your notes
           </h2>
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">
+          <span className="text-sm font-medium text-[#686852]">
             {visibleNotes.length} {visibleNotes.length === 1 ? "note" : "notes"}
             {selectedTag && ` tagged "${selectedTag}"`}
           </span>
         </div>
 
         {deleteError && (
-          <p aria-live="polite" className="text-sm text-red-600 dark:text-red-400">
+          <p aria-live="polite" className="rounded-lg border border-[#a34f36]/30 bg-[#a34f36]/5 px-3 py-2 text-sm text-[#8c3f2d]">
             {deleteError}
           </p>
         )}
 
         <div className="flex flex-col gap-2">
           <label
-            className="text-sm font-medium text-zinc-800 dark:text-zinc-200"
+            className="text-sm font-semibold tracking-wide text-[#45463b]"
             htmlFor="note-search"
           >
             Search notes
           </label>
           <input
-            className="min-h-11 w-full rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
+            className="min-h-11 w-full rounded-lg border border-[#b8ad91] bg-[#fffaf0] px-3 py-2 text-[#2e3027] outline-none transition focus:border-[#596247] focus:ring-2 focus:ring-[#596247]/30"
             id="note-search"
             name="search"
             onChange={(event) => setSearchQuery(event.target.value)}
@@ -347,10 +347,10 @@ export default function Home() {
           <div aria-label="Filter notes by tag" className="flex flex-wrap gap-2">
             <button
               aria-pressed={selectedTag === null}
-              className={`min-h-11 rounded-full border px-4 py-2 text-sm transition-colors ${
+              className={`min-h-11 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#596247]/40 ${
                 selectedTag === null
-                  ? "border-blue-600 bg-blue-600 text-white"
-                  : "border-zinc-300 text-zinc-700 hover:border-blue-500 dark:border-zinc-700 dark:text-zinc-300"
+                  ? "border-[#596247] bg-[#596247] text-[#fffaf0] shadow-sm"
+                  : "border-[#b8ad91] bg-[#fffaf0] text-[#596247] hover:border-[#596247] hover:bg-[#e9e0cb]"
               }`}
               onClick={() => setSelectedTag(null)}
               type="button"
@@ -360,10 +360,10 @@ export default function Home() {
             {availableTags.map((tag) => (
               <button
                 aria-pressed={selectedTag === tag}
-                className={`min-h-11 rounded-full border px-4 py-2 text-sm transition-colors ${
+                className={`min-h-11 rounded-full border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#596247]/40 ${
                   selectedTag === tag
-                    ? "border-blue-600 bg-blue-600 text-white"
-                    : "border-zinc-300 text-zinc-700 hover:border-blue-500 dark:border-zinc-700 dark:text-zinc-300"
+                    ? "border-[#596247] bg-[#596247] text-[#fffaf0] shadow-sm"
+                    : "border-[#b8ad91] bg-[#fffaf0] text-[#596247] hover:border-[#596247] hover:bg-[#e9e0cb]"
                 }`}
                 key={tag}
                 onClick={() => setSelectedTag(tag)}
@@ -376,19 +376,19 @@ export default function Home() {
         )}
 
         {!isReady && !persistenceError ? (
-          <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+          <p className="rounded-xl border border-dashed border-[#b8ad91] bg-[#fffaf0]/70 px-5 py-8 text-center text-[#686852]">
             Loading your notes...
           </p>
         ) : persistenceError ? (
-          <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+          <p className="rounded-xl border border-dashed border-[#b8ad91] bg-[#fffaf0]/70 px-5 py-8 text-center text-[#686852]">
             Notes are unavailable until saved data can be read.
           </p>
         ) : notes.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+          <p className="rounded-xl border border-dashed border-[#b8ad91] bg-[#fffaf0]/70 px-5 py-8 text-center text-[#686852]">
             Your notes will appear here.
           </p>
         ) : visibleNotes.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+          <p className="rounded-xl border border-dashed border-[#b8ad91] bg-[#fffaf0]/70 px-5 py-8 text-center text-[#686852]">
             {normalizedSearchQuery
               ? `No notes match "${searchQuery.trim()}".`
               : `No notes tagged "${selectedTag}".`}
@@ -397,23 +397,23 @@ export default function Home() {
           <ul className="flex flex-col gap-4">
             {visibleNotes.map(({ note, index }) => (
               <li
-                className="min-w-0 space-y-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950 sm:p-5"
+                className="min-w-0 space-y-3 rounded-xl border border-[#b8ad91] bg-[#fffaf0] p-4 shadow-[0_5px_18px_rgba(46,48,39,0.06)] sm:p-5"
                 key={index}
               >
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="min-w-0 flex-1 text-lg font-semibold [overflow-wrap:anywhere] text-zinc-950 dark:text-zinc-50">
+                  <h3 className="min-w-0 flex-1 text-lg font-bold [overflow-wrap:anywhere] text-[#2e3027]">
                     {note.title}
                   </h3>
                   <button
                     aria-label={`Delete note: ${note.title}`}
-                    className="min-h-11 shrink-0 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 dark:border-red-900 dark:text-red-300 dark:hover:bg-red-950"
+                    className="min-h-11 shrink-0 rounded-lg border border-[#a34f36]/40 bg-[#a34f36]/5 px-3 py-2 text-sm font-semibold text-[#8c3f2d] transition-colors hover:bg-[#a34f36]/15 focus:outline-none focus:ring-2 focus:ring-[#a34f36]/40"
                     onClick={() => handleDeleteNote(index)}
                     type="button"
                   >
                     Delete
                   </button>
                 </div>
-                <div className="space-y-3 break-words text-zinc-700 dark:text-zinc-300">
+                <div className="space-y-3 break-words text-[#45463b]">
                   <ReactMarkdown components={markdownComponents}>
                     {note.body}
                   </ReactMarkdown>
@@ -427,10 +427,10 @@ export default function Home() {
                         <button
                           aria-label={`Show notes tagged ${tag}`}
                           aria-pressed={selectedTag === tag}
-                          className={`min-h-11 rounded-full px-4 py-2 text-sm transition-colors ${
+                          className={`min-h-11 rounded-full border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#596247]/40 ${
                             selectedTag === tag
-                              ? "bg-blue-600 text-white"
-                              : "bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
+                              ? "border-[#596247] bg-[#596247] text-[#fffaf0]"
+                              : "border-[#b8ad91] bg-[#f3ead7] text-[#596247] hover:border-[#596247] hover:bg-[#e9e0cb]"
                           }`}
                           onClick={() => setSelectedTag(tag)}
                           type="button"
