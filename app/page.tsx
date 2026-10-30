@@ -1,6 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import {
+  useState,
+  useSyncExternalStore,
+  type FormEvent,
+} from "react";
 import { checkNote } from "./actions";
 
 type Note = {
@@ -9,10 +13,92 @@ type Note = {
   tags: string[];
 };
 
+const NOTES_STORAGE_KEY = "notess-notes";
+const NOTES_STORAGE_EVENT = "notess-notes-storage-change";
+const STORAGE_LOADING = "__notess_storage_loading__";
+const STORAGE_READ_ERROR = "__notess_storage_read_error__";
+const SUGGESTED_TAGS = ["work", "church", "personal", "ideas", "reading"];
+
+function subscribeToNotesStorage(onStoreChange: () => void) {
+  window.addEventListener("storage", onStoreChange);
+  window.addEventListener(NOTES_STORAGE_EVENT, onStoreChange);
+
+  return () => {
+    window.removeEventListener("storage", onStoreChange);
+    window.removeEventListener(NOTES_STORAGE_EVENT, onStoreChange);
+  };
+}
+
+function getNotesSnapshot() {
+  try {
+    return window.localStorage.getItem(NOTES_STORAGE_KEY);
+  } catch {
+    return STORAGE_READ_ERROR;
+  }
+}
+
+function getServerNotesSnapshot() {
+  return STORAGE_LOADING;
+}
+
+function saveNotesSnapshot(notes: Note[]) {
+  window.localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notes));
+  window.dispatchEvent(new Event(NOTES_STORAGE_EVENT));
+}
+
+function isNoteList(value: unknown): value is Note[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (note) =>
+        typeof note === "object" &&
+        note !== null &&
+        "title" in note &&
+        typeof note.title === "string" &&
+        "body" in note &&
+        typeof note.body === "string" &&
+        "tags" in note &&
+        Array.isArray(note.tags) &&
+        note.tags.every((tag: unknown) => typeof tag === "string"),
+    )
+  );
+}
+
 export default function Home() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const storageSnapshot = useSyncExternalStore(
+    subscribeToNotesStorage,
+    getNotesSnapshot,
+    getServerNotesSnapshot,
+  );
   const [error, setError] = useState("");
   const [isPending, setIsPending] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [tagsInput, setTagsInput] = useState("");
+
+  const isReady = storageSnapshot !== STORAGE_LOADING;
+  let notes: Note[] = [];
+  let storageError = "";
+
+  if (storageSnapshot === STORAGE_READ_ERROR) {
+    storageError =
+      "Saved notes could not be read, so adding notes is disabled to protect your data.";
+  } else if (storageSnapshot !== null && isReady) {
+    try {
+      const parsedNotes: unknown = JSON.parse(storageSnapshot);
+
+      if (isNoteList(parsedNotes)) {
+        notes = parsedNotes;
+      } else {
+        storageError =
+          "Saved notes could not be read, so adding notes is disabled to protect your data.";
+      }
+    } catch {
+      storageError =
+        "Saved notes could not be read, so adding notes is disabled to protect your data.";
+    }
+  }
+
+  const persistenceError = saveError || storageError;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,8 +115,19 @@ export default function Home() {
         return;
       }
 
-      setNotes((currentNotes) => [result.note, ...currentNotes]);
+      try {
+        saveNotesSnapshot([result.note, ...notes]);
+      } catch {
+        setSaveError(
+          "Your note could not be saved on this device. Check your browser storage and try again.",
+        );
+        return;
+      }
+
       form.reset();
+      setTagsInput("");
+    } catch {
+      setError("Something went wrong while adding your note. Please try again.");
     } finally {
       setIsPending(false);
     }
@@ -97,11 +194,46 @@ export default function Home() {
             name="tags"
             placeholder="work, ideas, reading"
             type="text"
+            value={tagsInput}
+            onChange={(event) => setTagsInput(event.target.value)}
           />
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
             Separate tags with commas.
           </p>
+          <div aria-label="Suggested tags" className="flex flex-wrap gap-2">
+            {SUGGESTED_TAGS.map((tag) => (
+              <button
+                className="rounded-full border border-zinc-300 px-3 py-1 text-sm text-zinc-700 transition-colors hover:border-blue-500 hover:text-blue-700 dark:border-zinc-700 dark:text-zinc-300 dark:hover:text-blue-300"
+                key={tag}
+                onClick={() => {
+                  const currentTags = tagsInput
+                    .split(",")
+                    .map((currentTag) => currentTag.trim())
+                    .filter(Boolean);
+
+                  if (
+                    currentTags.some(
+                      (currentTag) => currentTag.toLowerCase() === tag,
+                    )
+                  ) {
+                    return;
+                  }
+
+                  setTagsInput([...currentTags, tag].join(", "));
+                }}
+                type="button"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {persistenceError && (
+          <p aria-live="polite" className="text-sm text-red-600 dark:text-red-400">
+            {persistenceError}
+          </p>
+        )}
 
         {error && (
           <p aria-live="polite" className="text-sm text-red-600 dark:text-red-400">
@@ -111,10 +243,10 @@ export default function Home() {
 
         <button
           className="self-start rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={isPending}
+          disabled={isPending || !isReady || Boolean(persistenceError)}
           type="submit"
         >
-          {isPending ? "Adding note..." : "Add note"}
+          {!isReady ? "Loading notes..." : isPending ? "Adding note..." : "Add note"}
         </button>
       </form>
 
@@ -131,7 +263,15 @@ export default function Home() {
           </span>
         </div>
 
-        {notes.length === 0 ? (
+        {!isReady && !persistenceError ? (
+          <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+            Loading your notes...
+          </p>
+        ) : persistenceError ? (
+          <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+            Notes are unavailable until saved data can be read.
+          </p>
+        ) : notes.length === 0 ? (
           <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
             Your notes will appear here.
           </p>
