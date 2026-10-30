@@ -5,6 +5,7 @@ import {
   useSyncExternalStore,
   type FormEvent,
 } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
 import { checkNote } from "./actions";
 
 type Note = {
@@ -18,6 +19,31 @@ const NOTES_STORAGE_EVENT = "notess-notes-storage-change";
 const STORAGE_LOADING = "__notess_storage_loading__";
 const STORAGE_READ_ERROR = "__notess_storage_read_error__";
 const SUGGESTED_TAGS = ["work", "church", "personal", "ideas", "reading"];
+
+const markdownComponents: Components = {
+  h1: ({ children }) => (
+    <h1 className="text-2xl font-bold tracking-tight">{children}</h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="text-xl font-semibold tracking-tight">{children}</h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="text-lg font-semibold">{children}</h3>
+  ),
+  p: ({ children }) => <p className="leading-relaxed">{children}</p>,
+  strong: ({ children }) => (
+    <strong className="font-semibold text-zinc-950 dark:text-zinc-50">
+      {children}
+    </strong>
+  ),
+  ul: ({ children }) => (
+    <ul className="list-disc space-y-1 pl-6">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="list-decimal space-y-1 pl-6">{children}</ol>
+  ),
+  li: ({ children }) => <li className="pl-1">{children}</li>,
+};
 
 function subscribeToNotesStorage(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -285,9 +311,11 @@ export default function Home() {
                 <h3 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">
                   {note.title}
                 </h3>
-                <p className="whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">
-                  {note.body}
-                </p>
+                <div className="space-y-3 break-words text-zinc-700 dark:text-zinc-300">
+                  <ReactMarkdown components={markdownComponents}>
+                    {note.body}
+                  </ReactMarkdown>
+                </div>
                 {note.tags.length > 0 && (
                   <ul aria-label="Tags" className="flex flex-wrap gap-2">
                     {note.tags.map((tag) => (
