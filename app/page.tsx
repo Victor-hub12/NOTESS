@@ -101,6 +101,7 @@ export default function Home() {
   const [saveError, setSaveError] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const isReady = storageSnapshot !== STORAGE_LOADING;
   let notes: Note[] = [];
@@ -127,9 +128,16 @@ export default function Home() {
 
   const persistenceError = saveError || storageError;
   const availableTags = Array.from(new Set(notes.flatMap((note) => note.tags)));
-  const visibleNotes = selectedTag
-    ? notes.filter((note) => note.tags.includes(selectedTag))
-    : notes;
+  const normalizedSearchQuery = searchQuery.trim().toLocaleLowerCase();
+  const visibleNotes = notes.filter((note) => {
+    const matchesTag = !selectedTag || note.tags.includes(selectedTag);
+    const matchesSearch =
+      !normalizedSearchQuery ||
+      note.title.toLocaleLowerCase().includes(normalizedSearchQuery) ||
+      note.body.toLocaleLowerCase().includes(normalizedSearchQuery);
+
+    return matchesTag && matchesSearch;
+  });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -295,6 +303,24 @@ export default function Home() {
           </span>
         </div>
 
+        <div className="flex flex-col gap-2">
+          <label
+            className="text-sm font-medium text-zinc-800 dark:text-zinc-200"
+            htmlFor="note-search"
+          >
+            Search notes
+          </label>
+          <input
+            className="rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
+            id="note-search"
+            name="search"
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search titles and note bodies"
+            type="search"
+            value={searchQuery}
+          />
+        </div>
+
         {availableTags.length > 0 && (
           <div aria-label="Filter notes by tag" className="flex flex-wrap gap-2">
             <button
@@ -341,7 +367,9 @@ export default function Home() {
           </p>
         ) : visibleNotes.length === 0 ? (
           <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
-            No notes tagged &quot;{selectedTag}&quot;.
+            {normalizedSearchQuery
+              ? `No notes match "${searchQuery.trim()}".`
+              : `No notes tagged "${selectedTag}".`}
           </p>
         ) : (
           <ul className="flex flex-col gap-4">
