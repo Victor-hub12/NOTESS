@@ -189,12 +189,12 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-6 py-16 sm:px-10">
+    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-8 sm:gap-10 sm:px-10 sm:py-16">
       <header className="space-y-3">
         <p className="text-sm font-semibold tracking-wide text-blue-600 dark:text-blue-400">
           YOUR PERSONAL SPACE
         </p>
-        <h1 className="text-4xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
+        <h1 className="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50 sm:text-4xl">
           Notes
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400">
@@ -203,7 +203,7 @@ export default function Home() {
       </header>
 
       <form
-        className="flex flex-col gap-5 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+        className="flex flex-col gap-5 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 sm:p-6"
         onSubmit={handleSubmit}
       >
         <div className="flex flex-col gap-2">
@@ -214,7 +214,7 @@ export default function Home() {
             Title
           </label>
           <input
-            className="rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
+            className="min-h-11 w-full rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
             id="title"
             name="title"
             type="text"
@@ -229,7 +229,7 @@ export default function Home() {
             Body
           </label>
           <textarea
-            className="min-h-36 resize-y rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
+            className="min-h-36 w-full resize-y rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
             id="body"
             name="body"
             rows={5}
@@ -244,7 +244,7 @@ export default function Home() {
             Tags
           </label>
           <input
-            className="rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
+            className="min-h-11 w-full rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
             id="tags"
             name="tags"
             placeholder="work, ideas, reading"
@@ -258,7 +258,7 @@ export default function Home() {
           <div aria-label="Suggested tags" className="flex flex-wrap gap-2">
             {SUGGESTED_TAGS.map((tag) => (
               <button
-                className="rounded-full border border-zinc-300 px-3 py-1 text-sm text-zinc-700 transition-colors hover:border-blue-500 hover:text-blue-700 dark:border-zinc-700 dark:text-zinc-300 dark:hover:text-blue-300"
+                className="min-h-11 rounded-full border border-zinc-300 px-4 py-2 text-sm text-zinc-700 transition-colors hover:border-blue-500 hover:text-blue-700 dark:border-zinc-700 dark:text-zinc-300 dark:hover:text-blue-300"
                 key={tag}
                 onClick={() => {
                   const currentTags = tagsInput
@@ -297,7 +297,7 @@ export default function Home() {
         )}
 
         <button
-          className="self-start rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="min-h-11 w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           disabled={isPending || !isReady || Boolean(persistenceError)}
           type="submit"
         >
@@ -306,7 +306,7 @@ export default function Home() {
       </form>
 
       <section aria-labelledby="notes-heading" className="space-y-4">
-        <div className="flex items-baseline justify-between gap-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <h2
             className="text-xl font-semibold text-zinc-950 dark:text-zinc-50"
             id="notes-heading"
@@ -333,7 +333,7 @@ export default function Home() {
             Search notes
           </label>
           <input
-            className="rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
+            className="min-h-11 w-full rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-zinc-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:text-zinc-50"
             id="note-search"
             name="search"
             onChange={(event) => setSearchQuery(event.target.value)}
@@ -347,7 +347,7 @@ export default function Home() {
           <div aria-label="Filter notes by tag" className="flex flex-wrap gap-2">
             <button
               aria-pressed={selectedTag === null}
-              className={`rounded-full border px-3 py-1 text-sm transition-colors ${
+              className={`min-h-11 rounded-full border px-4 py-2 text-sm transition-colors ${
                 selectedTag === null
                   ? "border-blue-600 bg-blue-600 text-white"
                   : "border-zinc-300 text-zinc-700 hover:border-blue-500 dark:border-zinc-700 dark:text-zinc-300"
@@ -360,7 +360,7 @@ export default function Home() {
             {availableTags.map((tag) => (
               <button
                 aria-pressed={selectedTag === tag}
-                className={`rounded-full border px-3 py-1 text-sm transition-colors ${
+                className={`min-h-11 rounded-full border px-4 py-2 text-sm transition-colors ${
                   selectedTag === tag
                     ? "border-blue-600 bg-blue-600 text-white"
                     : "border-zinc-300 text-zinc-700 hover:border-blue-500 dark:border-zinc-700 dark:text-zinc-300"
@@ -397,16 +397,16 @@ export default function Home() {
           <ul className="flex flex-col gap-4">
             {visibleNotes.map(({ note, index }) => (
               <li
-                className="space-y-3 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950"
+                className="min-w-0 space-y-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950 sm:p-5"
                 key={index}
               >
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">
+                  <h3 className="min-w-0 flex-1 text-lg font-semibold [overflow-wrap:anywhere] text-zinc-950 dark:text-zinc-50">
                     {note.title}
                   </h3>
                   <button
                     aria-label={`Delete note: ${note.title}`}
-                    className="shrink-0 rounded-lg border border-red-200 px-3 py-1 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 dark:border-red-900 dark:text-red-300 dark:hover:bg-red-950"
+                    className="min-h-11 shrink-0 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 dark:border-red-900 dark:text-red-300 dark:hover:bg-red-950"
                     onClick={() => handleDeleteNote(index)}
                     type="button"
                   >
@@ -427,7 +427,7 @@ export default function Home() {
                         <button
                           aria-label={`Show notes tagged ${tag}`}
                           aria-pressed={selectedTag === tag}
-                          className={`rounded-full px-3 py-1 text-sm transition-colors ${
+                          className={`min-h-11 rounded-full px-4 py-2 text-sm transition-colors ${
                             selectedTag === tag
                               ? "bg-blue-600 text-white"
                               : "bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
