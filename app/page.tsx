@@ -99,6 +99,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [isPending, setIsPending] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [deleteError, setDeleteError] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -129,15 +130,30 @@ export default function Home() {
   const persistenceError = saveError || storageError;
   const availableTags = Array.from(new Set(notes.flatMap((note) => note.tags)));
   const normalizedSearchQuery = searchQuery.trim().toLocaleLowerCase();
-  const visibleNotes = notes.filter((note) => {
-    const matchesTag = !selectedTag || note.tags.includes(selectedTag);
-    const matchesSearch =
-      !normalizedSearchQuery ||
-      note.title.toLocaleLowerCase().includes(normalizedSearchQuery) ||
-      note.body.toLocaleLowerCase().includes(normalizedSearchQuery);
+  const visibleNotes = notes
+    .map((note, index) => ({ note, index }))
+    .filter(({ note }) => {
+      const matchesTag = !selectedTag || note.tags.includes(selectedTag);
+      const matchesSearch =
+        !normalizedSearchQuery ||
+        note.title.toLocaleLowerCase().includes(normalizedSearchQuery) ||
+        note.body.toLocaleLowerCase().includes(normalizedSearchQuery);
 
-    return matchesTag && matchesSearch;
-  });
+      return matchesTag && matchesSearch;
+    });
+
+  function handleDeleteNote(noteIndex: number) {
+    const updatedNotes = notes.filter((_, index) => index !== noteIndex);
+
+    try {
+      saveNotesSnapshot(updatedNotes);
+      setDeleteError("");
+    } catch {
+      setDeleteError(
+        "Your note could not be deleted. Your saved notes have not changed. Check your browser storage and try again.",
+      );
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -303,6 +319,12 @@ export default function Home() {
           </span>
         </div>
 
+        {deleteError && (
+          <p aria-live="polite" className="text-sm text-red-600 dark:text-red-400">
+            {deleteError}
+          </p>
+        )}
+
         <div className="flex flex-col gap-2">
           <label
             className="text-sm font-medium text-zinc-800 dark:text-zinc-200"
@@ -373,14 +395,24 @@ export default function Home() {
           </p>
         ) : (
           <ul className="flex flex-col gap-4">
-            {visibleNotes.map((note, index) => (
+            {visibleNotes.map(({ note, index }) => (
               <li
                 className="space-y-3 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950"
-                key={`${note.title}-${index}`}
+                key={index}
               >
-                <h3 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">
-                  {note.title}
-                </h3>
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="text-lg font-semibold text-zinc-950 dark:text-zinc-50">
+                    {note.title}
+                  </h3>
+                  <button
+                    aria-label={`Delete note: ${note.title}`}
+                    className="shrink-0 rounded-lg border border-red-200 px-3 py-1 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 dark:border-red-900 dark:text-red-300 dark:hover:bg-red-950"
+                    onClick={() => handleDeleteNote(index)}
+                    type="button"
+                  >
+                    Delete
+                  </button>
+                </div>
                 <div className="space-y-3 break-words text-zinc-700 dark:text-zinc-300">
                   <ReactMarkdown components={markdownComponents}>
                     {note.body}
