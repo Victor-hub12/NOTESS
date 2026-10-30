@@ -100,6 +100,7 @@ export default function Home() {
   const [isPending, setIsPending] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [tagsInput, setTagsInput] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const isReady = storageSnapshot !== STORAGE_LOADING;
   let notes: Note[] = [];
@@ -125,6 +126,10 @@ export default function Home() {
   }
 
   const persistenceError = saveError || storageError;
+  const availableTags = Array.from(new Set(notes.flatMap((note) => note.tags)));
+  const visibleNotes = selectedTag
+    ? notes.filter((note) => note.tags.includes(selectedTag))
+    : notes;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -285,9 +290,42 @@ export default function Home() {
             Your notes
           </h2>
           <span className="text-sm text-zinc-500 dark:text-zinc-400">
-            {notes.length} {notes.length === 1 ? "note" : "notes"}
+            {visibleNotes.length} {visibleNotes.length === 1 ? "note" : "notes"}
+            {selectedTag && ` tagged "${selectedTag}"`}
           </span>
         </div>
+
+        {availableTags.length > 0 && (
+          <div aria-label="Filter notes by tag" className="flex flex-wrap gap-2">
+            <button
+              aria-pressed={selectedTag === null}
+              className={`rounded-full border px-3 py-1 text-sm transition-colors ${
+                selectedTag === null
+                  ? "border-blue-600 bg-blue-600 text-white"
+                  : "border-zinc-300 text-zinc-700 hover:border-blue-500 dark:border-zinc-700 dark:text-zinc-300"
+              }`}
+              onClick={() => setSelectedTag(null)}
+              type="button"
+            >
+              All
+            </button>
+            {availableTags.map((tag) => (
+              <button
+                aria-pressed={selectedTag === tag}
+                className={`rounded-full border px-3 py-1 text-sm transition-colors ${
+                  selectedTag === tag
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : "border-zinc-300 text-zinc-700 hover:border-blue-500 dark:border-zinc-700 dark:text-zinc-300"
+                }`}
+                key={tag}
+                onClick={() => setSelectedTag(tag)}
+                type="button"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        )}
 
         {!isReady && !persistenceError ? (
           <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
@@ -301,9 +339,13 @@ export default function Home() {
           <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
             Your notes will appear here.
           </p>
+        ) : visibleNotes.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-zinc-300 px-5 py-8 text-center text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+            No notes tagged &quot;{selectedTag}&quot;.
+          </p>
         ) : (
           <ul className="flex flex-col gap-4">
-            {notes.map((note, index) => (
+            {visibleNotes.map((note, index) => (
               <li
                 className="space-y-3 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-950"
                 key={`${note.title}-${index}`}
@@ -320,10 +362,21 @@ export default function Home() {
                   <ul aria-label="Tags" className="flex flex-wrap gap-2">
                     {note.tags.map((tag) => (
                       <li
-                        className="rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                         key={tag}
                       >
-                        {tag}
+                        <button
+                          aria-label={`Show notes tagged ${tag}`}
+                          aria-pressed={selectedTag === tag}
+                          className={`rounded-full px-3 py-1 text-sm transition-colors ${
+                            selectedTag === tag
+                              ? "bg-blue-600 text-white"
+                              : "bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
+                          }`}
+                          onClick={() => setSelectedTag(tag)}
+                          type="button"
+                        >
+                          {tag}
+                        </button>
                       </li>
                     ))}
                   </ul>
